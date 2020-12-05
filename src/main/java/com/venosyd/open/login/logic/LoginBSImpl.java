@@ -57,6 +57,8 @@ public class LoginBSImpl implements LoginBS {
 
     @Override
     public Map<String, String> signup(String email, String phone, String passwd, String database) {
+        var repo = new Repository(database);
+
         if (email != null && email.isEmpty())
             email = null;
         if (phone != null && phone.isEmpty())
@@ -84,8 +86,8 @@ public class LoginBSImpl implements LoginBS {
                 user.setHistory(new ArrayList<>());
                 user.setRoles(new ArrayList<>());
 
-                new Repository(database).save(user);
-                return _loginProcess(user, database);
+                repo.save(user);
+                return _loginProcess(repo.get(AuthUser.class, "email", user.getEmail()), database);
             }
 
             // se o email foi invalido
